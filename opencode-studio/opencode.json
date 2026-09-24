@@ -14,5 +14,12 @@
       "options": { "baseURL": "http://localhost:11434/v1" },
       "models": { "llama3.2": { "name": "llama3.2 (local)" } }
     }
+  },
+  "agent": {
+    "builder": {
+      "description": "Primary agent for the Canvas Snapshot Diff Tool project.",
+      "mode": "primary",
+      "prompt": "{file:./system_prompt.txt}"
+    }
   }
 }

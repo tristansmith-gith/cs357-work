@@ -8,3 +8,41 @@ a session that has never seen this project would need to know.
 3. What may the agent touch?      artifact/ only
 4. What is done, today?           it runs and one check passes
 5. What must never happen?        The agent must never modify the original Canvas snapshot files.
+
+## 2026-09-23 — Rubric exists; scope decisions pending
+A testing rubric was created at artifact/rubric.md and artifact/rubric.json from
+spec.md + system_prompt.txt only (18 criteria TC-01..TC-18, 9 prohibitions
+PR-01..PR-09; weights sum 100; threshold 0.80; material rows fail outright).
+Seven spec.md items are GUESS/too-vague and await user decisions before the
+rubric and canvas_diff.py are final: (1) HTML capture layout/selectors,
+(2) snapshot input forms (directory/file/list), (3) exit 1 vs 2 for an
+existing-but-unreadable snapshot (spec.md:76 vs 80), (4) "no partial report"
+behavior, (5) meaning of "human-readable" beyond the pinned header/summary/
+sections, (6) section ordering beyond "grouped by title",
+(7) whether the four fields (title, due date, description, points) are final scope.
+
+## 2026-09-23 — All 7 spec decisions resolved; rubric updated (TC-19/TC-20 added)
+Decisions D1-D7 are recorded in artifact/rubric.md: snapshots = real Canvas page
+captures under snapshots/ (offline tool); one HTML file per positional (previous,
+current); open/read failure → exit 2, readable-but-unparseable → exit 1; no
+partial report; human-readable = pinned header/summary/sections/bullets; sections
+sorted alphabetically by title; four fields final (title, due date, description,
+points). rubric.json rebalanced to 29 rows, TC total 80 + PR 20 = 100.
+OPEN ITEM found while inspecting: snapshots/Canvas_y26M09d23h21m04s59.html is
+the Canvas DASHBOARD page (<title>Dashboard</title>), NOT the Assignments index
+page. It has assignment To-Do items (title/points/status), recent-feedback
+links, and "Due Date Changed" stream rows, but ZERO description text and no full
+assignment list. The description field selectors cannot be pinned from this
+file. A capture of /courses/<id>/assignments or individual assignment pages is
+still needed before TC-11 and the parser can be finalized. Do not modify the
+file under snapshots/.
+
+## 2026-09-23 — D8: proof-of-concept scope, dashboard blockers resolved
+User decision (recorded in artifact/rubric.md): ignore assignment descriptions
+and ignore that a capture is not a full assignment list — this is a
+proof-of-concept. Parser targets whatever assignments the Dashboard capture
+renders (title, due date, points where present); no Description edited bullet
+is produced. Selectors to pin: .ToDoSidebarItem__Title (title), the points
+<li> ("N points") inside the To-Do item, dash dates where shown, stream
+items. rubric.md TC-07/TC-10/TC-11 updated; rubric.json decisions object has
+D1..D8. The Dashboard capture stays unmodified under snapshots/.

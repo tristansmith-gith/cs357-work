@@ -1,0 +1,58 @@
+{
+  "name": "Canvas Snapshot Diff Tool rubric",
+  "mission": "Compare two Canvas assignment snapshots and write one human-readable Markdown report of every change (due dates, description edits, point adjustments, removals, additions), grouped by assignment title.",
+  "source_documents": ["spec.md", "system_prompt.txt", "2026-09-23 decisions"],
+  "generated": "2026-09-23",
+  "decisions": {
+    "D1": "Real Canvas page captures, stored read-only under snapshots/. Tool runs offline. Selectors pinned against the Dashboard capture now present.",
+    "D2": "Each snapshot is a single HTML file; positionals are OLD_HTML (previous) and NEW_HTML (current).",
+    "D3": "Exit 2 = cannot open/read input; exit 1 = readable but unparseable.",
+    "D4": "No partial report is written when processing fails.",
+    "D5": "Human-readable means the pinned header, summary, sections, and bullets; nothing more.",
+    "D6": "Report sections in defined order; assignments sorted alphabetically by title.",
+    "D7": "Final field scope: title, due date, description, points.",
+    "D8": "Proof of concept, 2026-09-23, amends D1/D7: ignore assignment descriptions and ignore partial (non-full-list) captures. Parse whatever assignments the capture shows (title, due date, points where present); do not emit Description edited."
+  },
+  "criteria": [
+    {"id": "TC-01", "scope": "criterion",  "weight": 7, "material": true},
+    {"id": "TC-02", "scope": "criterion",  "weight": 7, "material": true},
+    {"id": "TC-03", "scope": "criterion",  "weight": 7, "material": true},
+    {"id": "TC-04", "scope": "criterion",  "weight": 6, "material": true},
+    {"id": "TC-05", "scope": "criterion",  "weight": 6, "material": true},
+    {"id": "TC-06", "scope": "criterion",  "weight": 4, "material": true},
+    {"id": "TC-07", "scope": "criterion",  "weight": 5, "material": true},
+    {"id": "TC-08", "scope": "criterion",  "weight": 3, "material": true},
+    {"id": "TC-09", "scope": "criterion",  "weight": 3, "material": true},
+    {"id": "TC-10", "scope": "criterion",  "weight": 4, "material": true},
+    {"id": "TC-11", "scope": "criterion",  "weight": 4, "material": true},
+    {"id": "TC-12", "scope": "criterion",  "weight": 5, "material": true},
+    {"id": "TC-13", "scope": "criterion",  "weight": 3, "material": true},
+    {"id": "TC-14", "scope": "criterion",  "weight": 2, "material": false},
+    {"id": "TC-15", "scope": "criterion",  "weight": 3, "material": true},
+    {"id": "TC-16", "scope": "criterion",  "weight": 2, "material": true},
+    {"id": "TC-17", "scope": "criterion",  "weight": 2, "material": false},
+    {"id": "TC-18", "scope": "criterion",  "weight": 3, "material": false},
+    {"id": "TC-19", "scope": "criterion",  "weight": 2, "material": false},
+    {"id": "TC-20", "scope": "criterion",  "weight": 2, "material": true},
+    {"id": "PR-01", "scope": "prohibition", "weight": 4, "material": true},
+    {"id": "PR-02", "scope": "prohibition", "weight": 3, "material": true},
+    {"id": "PR-03", "scope": "prohibition", "weight": 2, "material": false},
+    {"id": "PR-04", "scope": "prohibition", "weight": 1, "material": false},
+    {"id": "PR-05", "scope": "prohibition", "weight": 3, "material": true},
+    {"id": "PR-06", "scope": "prohibition", "weight": 2, "material": false},
+    {"id": "PR-07", "scope": "prohibition", "weight": 1, "material": false},
+    {"id": "PR-08", "scope": "prohibition", "weight": 2, "material": true},
+    {"id": "PR-09", "scope": "prohibition", "weight": 2, "material": true}
+  ],
+  "weights_sum": 100,
+  "ratings": {
+    "meets": 1.0,
+    "approaching": 0.5,
+    "does_not_meet": 0.0
+  },
+  "threshold": {
+    "min_pass_score": 0.80,
+    "material_fail_on_any": true,
+    "note": "Pass requires weighted score >= 0.80 AND no Material row rated 'Does not meet'. Non-material rows contribute to the score only."
+  }
+}
