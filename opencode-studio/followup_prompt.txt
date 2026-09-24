@@ -1,0 +1,12 @@
+I have scored this against rubric.md. The following material criterion is below Meets and must be corrected before I accept it.
+
+1. [TC-06] The automated unittest suite does not exercise all required verification criteria. Add automated tests for the currently manual checks identified in critique.md:
+- [TC-08] verify that the generated report's first line names both snapshots and includes a timestamp.
+- [TC-14] verify that omitting -o writes to the default path artifact/report.md.
+- [TC-16] verify that a run writes exactly the expected Markdown output and does not leave stray files.
+- [TC-17] verify that running twice with the same output path overwrites the existing report without creating backup or additional output files.
+- [TC-20] add an automated verification that the artifact does not use network access and remains fully offline.
+
+Also address the fresh-clone reproducibility issue identified in TC-06: the real-capture tests currently skip when snapshots/ is absent because that directory is gitignored. Make the required automated test coverage reproducible from a fresh clone without introducing network access or changing the intended snapshot-input policy.
+
+Do not change anything else. Do not touch spec.md, rubric.md, rubric.json, system_prompt.txt, AGENTS.md, CHARTER.md, critique.md, or anything under .ai/ or docs/.

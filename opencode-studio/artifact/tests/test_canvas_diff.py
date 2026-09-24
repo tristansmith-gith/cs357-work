@@ -1,14 +1,15 @@
+import os
+import re
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ARTIFACT_DIR = Path(__file__).resolve().parents[1]
 FIXTURES_DIR = ARTIFACT_DIR / "tests" / "fixtures"
 TOOL_PATH = ARTIFACT_DIR / "canvas_diff.py"
-SNAPSHOT_DIR = ARTIFACT_DIR.parent / "snapshots"
-SNAPSHOT = next(SNAPSHOT_DIR.glob("Canvas_*.html"), None) if SNAPSHOT_DIR.exists() else None
 
 sys.path.insert(0, str(ARTIFACT_DIR))
 
@@ -96,14 +97,105 @@ class CanvasDiffCliTests(unittest.TestCase):
         self.assertIn("- Due date: Sep 24 at 11:59pm → not shown", report)
         self.assertNotIn("- Points:", report)
 
-    @unittest.skipIf(SNAPSHOT is None, "real Canvas capture not present")
-    def test_snapshot_is_never_modified(self):
-        before = SNAPSHOT.read_bytes()
-        result = run_tool(SNAPSHOT, SNAPSHOT, self.out_path)
-        after = SNAPSHOT.read_bytes()
+    def test_input_snapshots_are_never_modified(self):
+        fixture = FIXTURES_DIR / "dashboard_to_do.html"
+        before = fixture.read_bytes()
+        result = run_tool(fixture, fixture, self.out_path)
+        after = fixture.read_bytes()
         self.assertEqual(result.returncode, 0)
         self.assertIn("No changes detected.", self.read_report())
         self.assertEqual(before, after)
+
+    def test_report_header_names_both_snapshots_and_timestamp(self):
+        new = FIXTURES_DIR / "points_changed.html"
+        result = run_tool(self.base(), new, self.out_path)
+        self.assertEqual(result.returncode, 0)
+        header = self.read_report().splitlines()[0]
+        match = re.fullmatch(
+            r"Canvas Snapshot Diff: (.+?) → (.+?) at \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}",
+            header,
+        )
+        self.assertIsNotNone(match, header)
+        self.assertEqual(match.group(1), str(self.base()))
+        self.assertEqual(match.group(2), str(new))
+
+    def test_default_output_path_is_artifact_report_md(self):
+        self.assertEqual(canvas_diff.default_output_path(), str(ARTIFACT_DIR / "report.md"))
+
+    def test_omitting_o_writes_to_default_output_path(self):
+        with tempfile.TemporaryDirectory() as td:
+            default_target = Path(td) / "default.md"
+            with mock.patch("canvas_diff.default_output_path", return_value=str(default_target)):
+                rc = canvas_diff.main([str(self.base()), str(FIXTURES_DIR / "points_changed.html")])
+            self.assertEqual(rc, 0)
+            default = default_target.read_text(encoding="utf-8")
+            self.assertIn("## Alpha", default)
+            self.assertIn("- Points: 10 → 30", default)
+
+    def test_run_writes_only_expected_markdown_and_no_stray_files(self):
+        result = run_tool(self.base(), FIXTURES_DIR / "points_changed.html", self.out_path)
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(os.listdir(self.tmpdir.name), ["out.md"])
+        self.assertEqual(self.read_report().splitlines()[1:], [
+            "",
+            "Summary: 1 changed assignments, 0 removed, 0 added.",
+            "",
+            "## Alpha",
+            "- Points: 10 → 30",
+            "",
+        ])
+
+    def test_rerun_overwrites_in_place_with_no_backups(self):
+        first = run_tool(self.base(), self.base(), self.out_path)
+        self.assertEqual(first.returncode, 0)
+        self.assertIn("No changes detected.", self.read_report())
+        second = run_tool(self.base(), FIXTURES_DIR / "points_changed.html", self.out_path)
+        self.assertEqual(second.returncode, 0)
+        self.assertEqual(os.listdir(self.tmpdir.name), ["out.md"])
+        report = self.read_report()
+        self.assertIn("- Points: 10 → 30", report)
+        self.assertNotIn("No changes detected.", report)
+
+    def test_artifact_has_no_network_capable_code(self):
+        source = TOOL_PATH.read_text(encoding="utf-8")
+        forbidden_imports = {
+            "socket",
+            "urllib",
+            "http",
+            "ftplib",
+            "smtplib",
+            "smtpd",
+            "poplib",
+            "imaplib",
+            "nntplib",
+            "telnetlib",
+            "xmlrpc",
+            "webbrowser",
+            "socketserver",
+            "requests",
+            "httpx",
+            "aiohttp",
+            "urllib3",
+        }
+        for raw in source.splitlines():
+            line = raw.strip()
+            if line.startswith("import ") or line.startswith("from "):
+                module = line.split()[1].split(".")[0]
+                self.assertNotIn(module, forbidden_imports, line)
+        self.assertIsNone(re.search(r"\b(?:urlopen|urlretrieve)\s*\(", source))
+        self.assertNotIn("socket.", source)
+        self.assertNotIn("requests.", source)
+
+    def test_tool_runs_fully_offline_when_network_is_blocked(self):
+        import socket
+
+        def no_network(*args, **kwargs):
+            raise AssertionError("network access attempted during offline run")
+
+        with mock.patch("socket.socket", no_network):
+            rc = canvas_diff.main([str(self.base()), str(self.base()), "-o", str(self.out_path)])
+        self.assertEqual(rc, 0)
+        self.assertIn("No changes detected.", self.read_report())
 
 
 class ParserUnitTests(unittest.TestCase):
@@ -158,9 +250,8 @@ class ParserUnitTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             canvas_diff.parse_records(html_text)
 
-    @unittest.skipIf(SNAPSHOT is None, "real Canvas capture not present")
-    def test_real_capture_maps_to_expected_records(self):
-        records = canvas_diff.parse_snapshot(str(SNAPSHOT))
+    def test_dashboard_to_do_fixture_maps_to_expected_records(self):
+        records = canvas_diff.parse_snapshot(str(FIXTURES_DIR / "dashboard_to_do.html"))
         by_title = {r.title: r for r in records}
         self.assertEqual(
             set(by_title),
