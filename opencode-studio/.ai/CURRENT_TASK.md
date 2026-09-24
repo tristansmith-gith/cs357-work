@@ -1,5 +1,13 @@
 # Current Task
 
+## Status (updated 2026-09-24, cold-start kickoff)
+
+The POC implementation below is **COMPLETE**: all 8 Completion Criteria are
+met and verified (20/20 tests, smoke run exit 0 on the real capture, never a
+partial report). This session added no code. The only open bookkeeping:
+`docs/ROADMAP.md` does not exist yet (referenced by START_HERE.md:3), and the
+branch carries unpushed commits. Next safe action is directory-specific below.
+
 ## Active Subtask
 
 Implement the full Canvas Snapshot Diff Tool as a proof of concept per
@@ -66,3 +74,10 @@ Scope decisions from the 2026-09-23 interview (D1-D8 context):
 8. Smoke run: the real capture passed as both OLD and NEW yields exit 0 and a
    report containing "No changes detected."; script never writes to the
    snapshot.
+
+## Next Safe Action
+
+Create `docs/ROADMAP.md` (milestone status board) with docs/ edit permission,
+then push the unpushed commits (`4878873`, `2724883`). No further
+implementation work unless the user expands POC scope (e.g. a real
+`/courses/<id>/assignments` capture to pin selectors beyond the Dashboard).

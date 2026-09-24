@@ -32,3 +32,30 @@ Next Safe Action. Append only: never rewrite or delete an existing entry.
   delete the untracked `artifact/__pycache__/` residue or add `__pycache__`
   to `.gitignore`; the implementation task itself is complete and requires
   no further code work.
+
+## 2026-09-24 — Cold-start kickoff: state reconciliation + residue cleanup
+
+- **Scope:** Boot a fresh session via KICKOFF_PROMPT.txt: read the docs in
+  order, report mission/current-task/repo-state, and take the next safe
+  action. No feature work.
+- **Completed:** Verified state against fresh git/test output (not memory).
+  Found the docs' "fully committed" claim was wrong: `.ai/SESSION.md`,
+  `docs/DECISION_LOG.md`, the MEMORY session-wrap append, the `START_HERE.md`
+  entry-funnel content, the expanded 20-case test suite, and the new
+  `dashboard_to_do.html` fixture were all uncommitted. With the user's OK:
+  added `__pycache__/` + `*.pyc` to `.gitignore` and untracked the two
+  bytecode files committed by the junk commit `bcd7fde` (commit `2724883`).
+  A concurrent user process committed the swept-up handoff state as
+  `4878873 "part 6 in progress"` (the four course files got included there
+  despite the "handoff-only" choice — my UI choice was overridden by that
+  process; nothing reverted).
+- **Deliberately did not do:** create the missing `docs/ROADMAP.md` (docs/ is
+  ask-gated); push the 2 unpushed commits (`4878873`, `2724883`); re-open the
+  stream-fallback question (D9 stands); any code change to `canvas_diff.py`.
+- **Validation:** `python3 -m unittest discover -s artifact/tests` → 20/20 OK
+  at HEAD; smoke run (real capture as both OLD and NEW) → exit 0 with
+  "No changes detected."; snapshot shasum `503cfe1…` unchanged; working tree
+  clean at session end.
+- **Next Safe Action:** with docs/ permission, create `docs/ROADMAP.md`
+  (milestone status board) so the read order in START_HERE.md:3 and the
+  kickoff matches reality; then optionally push the unpushed commits.
