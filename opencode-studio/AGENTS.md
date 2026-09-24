@@ -41,6 +41,8 @@ When you learn something a fresh session could not know, append it to
 `.ai/MEMORY.md` under a dated heading, newest entry at the bottom. Append only:
 never rewrite or delete an existing entry.
 
+Never run rm -rf. Ask before deleting anything.
+
 ## Escalation rule
 1. Reach for `gh` first for anything GitHub-side (creating and cloning
    repositories, issues, pull requests, reviews). Confirm once per session with
