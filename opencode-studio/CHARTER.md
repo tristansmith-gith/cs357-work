@@ -14,20 +14,19 @@
 
 Every engineering decision should prioritize, in order:
 
-1. <Highest-ranked value, e.g., Correctness / Preservation / Safety>
-2.  Reproducibility
-3.  Maintainability
-4.  Automation
-5.  Documentation
+1. Correctness over speed
+2. Reproducibility over automation
+3. Readability over cleverness
+4. Small reversible steps over large ones
+5. Working software over documentation of software
+
 
 <!-- The ranking matters more than the list.  When two values conflict mid-task,
      the agent resolves the conflict by rank instead of asking or guessing. -->
 
 # Definition of Success
 
-<A concrete, observable test for "done."  Example: "A new contributor can clone the
-repository, run one documented command, and produce a working build that passes the
-standing test gate.">
+The tool successfully identifies all changes correctly and outputs a readable file containing every change in a human-readable format: date changes, description edits, points adjustments, removals, etc. all contained in a list separated by the title of each assignment.
 
 # Long-Term Architecture
 
