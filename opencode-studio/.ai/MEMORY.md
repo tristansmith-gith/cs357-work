@@ -46,3 +46,28 @@ is produced. Selectors to pin: .ToDoSidebarItem__Title (title), the points
 <li> ("N points") inside the To-Do item, dash dates where shown, stream
 items. rubric.md TC-07/TC-10/TC-11 updated; rubric.json decisions object has
 D1..D8. The Dashboard capture stays unmodified under snapshots/.
+
+## 2026-09-24 — canvas_diff.py implemented; D9 rejects the stream fallback
+artifact/canvas_diff.py (Python 3, stdlib only: html.parser, re, argparse)
+is implemented and all 13 unittest cases pass via
+`python3 -m unittest discover -s artifact/tests`. Parser is To-Do-only:
+a record is one `.ToDoSidebarItem` whose anchor aria-label is
+"Assignment, <Title>"; due date and points come from the <li> texts of
+[data-testid=ToDoSidebarItem__InformationRow] ("N points", "Sep 24 at
+11:59pm"); statuses like "Closed" mean that field is "not shown"; non-
+assignment slugs (Announcement/Calendar Event) are ignored; duplicate
+titles across the ~13x-self-duplicated real capture dedupe, first wins.
+D9 (recorded in artifact/rubric.md + rubric.json, and CURRENT_TASK.md Q2):
+the activity-stream fallback is REJECTED on charter value #1 (Correctness
+over speed) — a "Due Date Changed" row carries the change timestamp, not the
+due date or points, so stream records could only no-op, falsely "Assignment
+removed" (rolling stream window), or mislabel "Assignment added". Report:
+header (both paths + timestamp), "Summary: N changed, M removed, K added.",
+alphabetical ## <Title> sections with "Due date: A → B" / "Points: X → Y" /
+removed / added bullets, "No changes detected." when empty. Exits: 0 success,
+1 reads-but-unparseable (failing file on stderr, no report), 2 usage/not-
+found/unreadable/unwritable OUT_MD (usage on stderr). Smoke run: the real
+capture as both OLD and NEW yields exit 0 and "No changes detected.", snapshot
+hash unchanged. Real-capture parser test pins the 3 To-Do titles (Lab:
+OpenCode Studio, Homework 3, Writing as Thinking - Week 5) — skipped if the
+capture is absent.

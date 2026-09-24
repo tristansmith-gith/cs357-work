@@ -11,7 +11,8 @@
     "D5": "Human-readable means the pinned header, summary, sections, and bullets; nothing more.",
     "D6": "Report sections in defined order; assignments sorted alphabetically by title.",
     "D7": "Final field scope: title, due date, description, points.",
-    "D8": "Proof of concept, 2026-09-23, amends D1/D7: ignore assignment descriptions and ignore partial (non-full-list) captures. Parse whatever assignments the capture shows (title, due date, points where present); do not emit Description edited."
+    "D8": "Proof of concept, 2026-09-23, amends D1/D7: ignore assignment descriptions and ignore partial (non-full-list) captures. Parse whatever assignments the capture shows (title, due date, points where present); do not emit Description edited.",
+    "D9": "Proof of concept, 2026-09-24, supersedes the stream-row clause in D1: parser is To-Do-only. An activity-stream row carries the change timestamp, not the assignment's due date or points, so stream-derived records could only produce no-ops, false removals (rolling window), or mislabeled additions. Correctness over speed (charter #1). TC-11 reworded to To-Do scope."
   },
   "criteria": [
     {"id": "TC-01", "scope": "criterion",  "weight": 7, "material": true},
