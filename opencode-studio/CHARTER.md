@@ -8,7 +8,7 @@
 
 # Project Mission
 
-<One or two sentences: what is being built and why. State the product, not the technology.>
+To create a program which compares Canvas HTML files and exports the differences in a clear Markdown file.
 
 # Engineering Philosophy
 
