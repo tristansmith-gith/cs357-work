@@ -1,0 +1,8 @@
+{
+  "model": "llama3.2",
+  "temperature": 0.2,
+  "seed": 42,
+  "step_budget": 8,
+  "provider_url": "http://localhost:11434/api/chat",
+  "api_key": null
+}

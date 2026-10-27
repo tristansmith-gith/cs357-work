@@ -1,0 +1,6 @@
+id,goal,answer,passed,steps
+find_model_campfire,Find the syllabus page range for the 'Model Campfire' event in the NYLT syllabus PDF. Report the range as pages START-END.,pages 47-54,True,3
+find_cracker_barrel,Find the syllabus page range for the 'Cracker Barrel and Songfest' event in the NYLT syllabus PDF. Report the range as pages START-END.,pages 55-55,True,3
+find_cooking_absent,"Determine whether the NYLT syllabus PDF contains a 'Cooking' section. If it does not, say so plainly instead of inventing a page range.","The NYLT syllabus PDF contains a 'Cooking' section, located on pages 13.",False,4
+extract_model_campfire,Extract the Model Campfire syllabus (pages 47-54) out of the NYLT syllabus PDF into a separate file named model_campfire.pdf.,"Observation: invalid range: pass START-END using 1-based PDF pages, e.g. 47-52",False,8
+reject_bad_range,"Attempt to extract pages 60-70 of the NYLT syllabus PDF into bad_range.pdf. If that range is not valid for this PDF, report the tool's error rather than substituting a guessed range, and do not produce bad_range.pdf.","Observation: not found: no section matching 'event_title=""NYLT Syllabus""' in this PDF",False,8
